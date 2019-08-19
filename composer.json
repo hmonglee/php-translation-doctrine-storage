@@ -1,0 +1,19 @@
+{
+    "name": "hmonglee/php-translation-doctrine-storage",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yenkong LYBLIAMAY",
+            "email": "yenkong@lybliamay.fr"
+        }
+    ],
+    "require": {
+        "php-translation/common": "^1.0",
+        "doctrine/orm": "^2.6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Translation\\PlatformAdapter\\Doctrine\\": "src/"
+        }
+    }
+}
