@@ -9,41 +9,57 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Translation
  *
  * @ORM\Entity
- * @ORM\Table(name="translation")
+ * @ORM\Table(name="translation", uniqueConstraints={@ORM\UniqueConstraint(name="translation_idx", columns={"key", "domain", "locale"})})
  */
 class Translation
 {
     /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     *
      * @var int
      */
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     *
      * @var string
      */
     private $key;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     *
      * @var string
      */
     private $domain;
 
     /**
+     * @ORM\Column(type="string", length=5, nullable=false)
+     *
      * @var string
      */
     private $locale;
 
     /**
+     * @ORM\Column(type="text")
+     *
      * @var string
      */
     private $translation;
 
     /**
+     * @ORM\Column(type="datetime", nullable=false)
+     *
      * @var DateTime
      */
     private $createdAt;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     *
      * @var DateTime|null
      */
     private $updatedAt;
