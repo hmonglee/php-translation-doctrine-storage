@@ -3,6 +3,7 @@
 namespace Translation\PlatformAdapter\Doctrine\Bridge\Symfony\DependencyInjection;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
  * @author Yenkong Lybliamay <yenkong@lybliamay.fr>
@@ -17,6 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('translation_adapter_doctrine');
+        $treeBuilder->root('translation_adapter_doctrine');
 
         return $treeBuilder;
     }

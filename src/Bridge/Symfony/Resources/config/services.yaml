@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Translation\PlatformAdapter\Doctrine\Service\TranslationManager:
+
+    php_translation.adapter.doctrine:
+        class: Translation\PlatformAdapter\Doctrine\Doctrine
