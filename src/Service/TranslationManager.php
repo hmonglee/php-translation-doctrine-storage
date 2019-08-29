@@ -2,6 +2,7 @@
 
 namespace Translation\PlatformAdapter\Doctrine\Service;
 
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Translation\Common\Model\MessageInterface;
 use Translation\PlatformAdapter\Doctrine\Entity\Translation;
@@ -22,11 +23,37 @@ class TranslationManager implements TranslationManagerInterface
     }
 
     /**
+     * @return array
+     */
+    public function findAllDomains()
+    {
+        return $this->getRepository()->findAllDomains();
+    }
+
+    /**
+     * @param string $locale
+     * @param string $domain
+     *
+     * @return array
+     */
+    public function findAllMessages($locale, $domain)
+    {
+        $messages = $this->getRepository()->findBy(['locale' => $locale, 'domain' => $domain]);
+        $result = [];
+
+        foreach ($messages as $message) {
+            $result[$message->getKey()] = $message->getTranslation();
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $locale
      * @param string $domain
      * @param string $key
      *
-     * @return null|object
+     * @return object|null
      */
     public function getTranslation($locale, $domain, $key)
     {
@@ -38,10 +65,19 @@ class TranslationManager implements TranslationManagerInterface
      */
     public function createTranslation(MessageInterface $message)
     {
+        $translation = $this->findOneBy($message->getLocale(), $message->getDomain(), $message->getKey());
+
+        if ($translation) {
+            $this->updateTranslation($message);
+
+            return;
+        }
+
         $translation = (new Translation())->setLocale($message->getLocale())
             ->setDomain($message->getDomain())
             ->setKey($message->getKey())
-            ->setTranslation($message->getTranslation());
+            ->setTranslation($message->getTranslation())
+            ->setStatus($message->getKey() === $message->getTranslation() ? Translation::STATUS_DRAFT : Translation::STATUS_PUBLISHED);
 
         $this->entityManager->persist($translation);
         $this->entityManager->flush();
@@ -55,10 +91,13 @@ class TranslationManager implements TranslationManagerInterface
         $translation = $this->findOneBy($message->getLocale(), $message->getDomain(), $message->getKey());
 
         if (!$translation) {
+            $this->createTranslation($message);
+
             return;
         }
 
-        $translation->setTranslation($message->getTranslation());
+        $translation->setTranslation($message->getTranslation())
+            ->setStatus($message->getKey() === $message->getTranslation() ? Translation::STATUS_DRAFT : Translation::STATUS_PUBLISHED);
         $this->entityManager->flush();
     }
 
@@ -88,11 +127,18 @@ class TranslationManager implements TranslationManagerInterface
      */
     private function findOneBy($locale, $domain, $key)
     {
-        return $this->entityManager->getRepository(Translation::class)
-            ->findOneBy([
-                'locale' => $locale,
-                'domain' => $domain,
-                'key' => $key,
-            ]);
+        return $this->getRepository()->findOneBy([
+            'locale' => $locale,
+            'domain' => $domain,
+            'key' => $key,
+        ]);
+    }
+
+    /**
+     * @return ObjectRepository
+     */
+    private function getRepository()
+    {
+        return $this->entityManager->getRepository(Translation::class);
     }
 }

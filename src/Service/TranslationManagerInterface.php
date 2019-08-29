@@ -11,7 +11,7 @@ interface TranslationManagerInterface
      * @param string $domain
      * @param string $key
      *
-     * @return null|object
+     * @return object|null
      */
     public function getTranslation($locale, $domain, $key);
 

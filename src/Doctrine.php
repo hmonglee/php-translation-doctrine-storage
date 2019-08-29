@@ -2,16 +2,18 @@
 
 namespace Translation\PlatformAdapter\Doctrine;
 
-use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\MessageCatalogueInterface;
 use Translation\Common\Model\Message;
 use Translation\Common\Model\MessageInterface;
 use Translation\Common\Storage;
+use Translation\Common\TransferableStorage;
 use Translation\PlatformAdapter\Doctrine\Service\TranslationManager;
 
 /**
  * @author Yenkong Lybliamay <yenkong@lybliamay.fr>
  */
-class Doctrine implements Storage
+class Doctrine implements Storage, TransferableStorage
 {
     /** @var TranslationManager */
     private $manager;
@@ -27,7 +29,7 @@ class Doctrine implements Storage
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function get($locale, $domain, $key)
     {
@@ -41,7 +43,7 @@ class Doctrine implements Storage
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function create(MessageInterface $message)
     {
@@ -49,7 +51,7 @@ class Doctrine implements Storage
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function update(MessageInterface $message)
     {
@@ -57,10 +59,39 @@ class Doctrine implements Storage
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function delete($locale, $domain, $key)
     {
         $this->manager->deleteTranslation($locale, $domain, $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export(MessageCatalogueInterface $catalogue)
+    {
+        $locale = $catalogue->getLocale();
+
+        foreach ($this->manager->findAllDomains() as $domain) {
+            $arrayLoader = new ArrayLoader();
+            $newCatalogue = $arrayLoader->load($this->manager->findAllMessages($locale, $domain), $locale, $domain['domain']);
+            $catalogue->addCatalogue($newCatalogue);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function import(MessageCatalogueInterface $catalogue)
+    {
+        $locale = $catalogue->getLocale();
+
+        foreach ($catalogue->getDomains() as $domain) {
+            foreach ($catalogue->all($domain) as $key => $translation) {
+                $message = new Message($key, $domain, $locale, $translation);
+                $this->create($message);
+            }
+        }
     }
 }

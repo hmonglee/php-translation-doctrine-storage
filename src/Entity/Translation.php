@@ -4,15 +4,20 @@ namespace Translation\PlatformAdapter\Doctrine\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Translation\Common\Model\MessageInterface;
 
 /**
- * Class Translation
+ * Class Translation.
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Translation\PlatformAdapter\Doctrine\Repository\TranslationRepository")
  * @ORM\Table(name="translation", uniqueConstraints={@ORM\UniqueConstraint(name="translation_idx", columns={"key", "domain", "locale"})})
+ * @ORM\HasLifecycleCallbacks()
  */
-class Translation
+class Translation implements MessageInterface
 {
+    const STATUS_DRAFT = 'draft';
+    const STATUS_PUBLISHED = 'published';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -20,53 +25,69 @@ class Translation
      *
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
      *
      * @var string
      */
-    private $key;
+    protected $key;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
      *
      * @var string
      */
-    private $domain;
+    protected $domain;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=false)
      *
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @ORM\Column(type="text")
      *
      * @var string
      */
-    private $translation;
+    protected $translation;
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
      *
      * @var DateTime
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      *
      * @var DateTime|null
      */
-    private $updatedAt;
+    protected $updatedAt;
+
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @var string
+     */
+    protected $status;
 
     public function __construct()
     {
         $this->createdAt = new DateTime();
+        $this->status = self::STATUS_DRAFT;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function setUpdateAtValue()
+    {
+        $this->updatedAt = new \DateTime();
     }
 
     /**
@@ -195,5 +216,124 @@ class Translation
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return Translation
+     */
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request target.
+     *
+     * @param string $domain
+     *
+     * @return static
+     */
+    public function withDomain($domain)
+    {
+        $new = clone $this;
+        $new->domain = $domain;
+
+        return $new;
+    }
+
+    /**
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request target.
+     *
+     * @param string $locale
+     *
+     * @return static
+     */
+    public function withLocale($locale)
+    {
+        $new = clone $this;
+        $new->locale = $locale;
+
+        return $new;
+    }
+
+    /**
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request target.
+     *
+     * @param string $translation
+     *
+     * @return static
+     */
+    public function withTranslation($translation)
+    {
+        $new = clone $this;
+        $new->translation = $translation;
+
+        return $new;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMeta()
+    {
+        return [];
+    }
+
+    /**
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request target.
+     *
+     * @param array $meta
+     *
+     * @return static
+     */
+    public function withMeta(array $meta)
+    {
+        return;
+    }
+
+    /**
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request target.
+     *
+     * @param string $key
+     * @param string $value
+     *
+     * @return static
+     */
+    public function withAddedMeta($key, $value)
+    {
+        return;
+    }
+
+    /**
+     * @param string     $key
+     * @param mixed|null $default
+     *
+     * @return mixed|null
+     */
+    public function getMeta($key, $default = null)
+    {
+        return null;
     }
 }
