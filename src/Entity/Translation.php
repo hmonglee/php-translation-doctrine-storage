@@ -56,6 +56,13 @@ class Translation implements MessageInterface
     protected $translation;
 
     /**
+     * @ORM\Column(type="json")
+     *
+     * @var array
+     */
+    protected $meta = [];
+
+    /**
      * @ORM\Column(type="datetime", nullable=false)
      *
      * @var DateTime
@@ -221,7 +228,7 @@ class Translation implements MessageInterface
     /**
      * @return string
      */
-    public function getStatus(): string
+    public function getStatus()
     {
         return $this->status;
     }
@@ -231,7 +238,7 @@ class Translation implements MessageInterface
      *
      * @return Translation
      */
-    public function setStatus(string $status): self
+    public function setStatus(string $status)
     {
         $this->status = $status;
 
@@ -294,7 +301,7 @@ class Translation implements MessageInterface
      */
     public function getAllMeta()
     {
-        return [];
+        return $this->meta;
     }
 
     /**
@@ -308,7 +315,10 @@ class Translation implements MessageInterface
      */
     public function withMeta(array $meta)
     {
-        return;
+        $new = clone $this;
+        $new->meta = $meta;
+
+        return $new;
     }
 
     /**
@@ -323,7 +333,10 @@ class Translation implements MessageInterface
      */
     public function withAddedMeta($key, $value)
     {
-        return;
+        $new = clone $this;
+        $new->meta[$key] = $value;
+
+        return $new;
     }
 
     /**
@@ -334,6 +347,22 @@ class Translation implements MessageInterface
      */
     public function getMeta($key, $default = null)
     {
-        return null;
+        if (array_key_exists($key, $this->meta)) {
+            return $this->meta[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param $meta
+     *
+     * @return $this
+     */
+    public function setMeta($meta)
+    {
+        $this->meta = $meta;
+
+        return $this;
     }
 }

@@ -77,6 +77,7 @@ class TranslationManager implements TranslationManagerInterface
             ->setDomain($message->getDomain())
             ->setKey($message->getKey())
             ->setTranslation($message->getTranslation())
+            ->setMeta($message->getAllMeta())
             ->setStatus($message->getKey() === $message->getTranslation() ? Translation::STATUS_DRAFT : Translation::STATUS_PUBLISHED);
 
         $this->entityManager->persist($translation);
