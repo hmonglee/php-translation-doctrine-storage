@@ -97,8 +97,7 @@ class TranslationManager implements TranslationManagerInterface
             return;
         }
 
-        $translation->setTranslation($message->getTranslation())
-            ->setStatus($message->getKey() === $message->getTranslation() ? Translation::STATUS_DRAFT : Translation::STATUS_PUBLISHED);
+        $translation->setTranslation($message->getTranslation());
         $this->entityManager->flush();
     }
 
