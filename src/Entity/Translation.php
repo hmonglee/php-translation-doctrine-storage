@@ -49,7 +49,7 @@ class Translation implements MessageInterface
     protected $locale;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=4000, nullable=true)
      *
      * @var string
      */
@@ -95,6 +95,14 @@ class Translation implements MessageInterface
     public function setUpdateAtValue()
     {
         $this->updatedAt = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function updateStatus()
+    {
+        $this->status = $this->key === $this->translation ? self::STATUS_DRAFT : self::STATUS_PUBLISHED;
     }
 
     /**
