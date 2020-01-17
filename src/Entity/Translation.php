@@ -118,7 +118,7 @@ class Translation implements MessageInterface
     /**
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -138,7 +138,7 @@ class Translation implements MessageInterface
     /**
      * @return string
      */
-    public function getDomain()
+    public function getDomain(): string
     {
         return $this->domain;
     }
@@ -158,7 +158,7 @@ class Translation implements MessageInterface
     /**
      * @return string
      */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }
@@ -178,7 +178,7 @@ class Translation implements MessageInterface
     /**
      * @return string
      */
-    public function getTranslation()
+    public function getTranslation(): string
     {
         return $this->translation;
     }
@@ -264,7 +264,7 @@ class Translation implements MessageInterface
      *
      * @return static
      */
-    public function withDomain($domain)
+    public function withDomain($domain): MessageInterface
     {
         $new = clone $this;
         $new->domain = $domain;
@@ -281,7 +281,7 @@ class Translation implements MessageInterface
      *
      * @return static
      */
-    public function withLocale($locale)
+    public function withLocale($locale): MessageInterface
     {
         $new = clone $this;
         $new->locale = $locale;
@@ -298,7 +298,7 @@ class Translation implements MessageInterface
      *
      * @return static
      */
-    public function withTranslation($translation)
+    public function withTranslation($translation): MessageInterface
     {
         $new = clone $this;
         $new->translation = $translation;
@@ -309,7 +309,7 @@ class Translation implements MessageInterface
     /**
      * @return array
      */
-    public function getAllMeta()
+    public function getAllMeta(): array
     {
         return $this->meta;
     }
@@ -323,7 +323,7 @@ class Translation implements MessageInterface
      *
      * @return static
      */
-    public function withMeta(array $meta)
+    public function withMeta(array $meta): MessageInterface
     {
         $new = clone $this;
         $new->meta = $meta;
@@ -341,7 +341,7 @@ class Translation implements MessageInterface
      *
      * @return static
      */
-    public function withAddedMeta($key, $value)
+    public function withAddedMeta($key, $value): MessageInterface
     {
         $new = clone $this;
         $new->meta[$key] = $value;
