@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Translation\PlatformAdapter\Doctrine;
 
 use Symfony\Component\Translation\Loader\ArrayLoader;
@@ -31,7 +33,7 @@ class Doctrine implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function get($locale, $domain, $key)
+    public function get(string $locale, string $domain, string $key): MessageInterface
     {
         $translation = $this->manager->getTranslation($locale, $domain, $key);
 
@@ -45,7 +47,7 @@ class Doctrine implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function create(MessageInterface $message)
+    public function create(MessageInterface $message): void
     {
         $this->manager->createTranslation($message);
     }
@@ -53,7 +55,7 @@ class Doctrine implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function update(MessageInterface $message)
+    public function update(MessageInterface $message): void
     {
         $this->manager->updateTranslation($message);
     }
@@ -61,7 +63,7 @@ class Doctrine implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function delete($locale, $domain, $key)
+    public function delete($locale, $domain, $key): void
     {
         $this->manager->deleteTranslation($locale, $domain, $key);
     }
@@ -69,7 +71,7 @@ class Doctrine implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function export(MessageCatalogueInterface $catalogue)
+    public function export(MessageCatalogueInterface $catalogue, array $options = []): void
     {
         $locale = $catalogue->getLocale();
 
@@ -83,7 +85,7 @@ class Doctrine implements Storage, TransferableStorage
     /**
      * {@inheritdoc}
      */
-    public function import(MessageCatalogueInterface $catalogue)
+    public function import(MessageCatalogueInterface $catalogue, array $options = []): void
     {
         $locale = $catalogue->getLocale();
 

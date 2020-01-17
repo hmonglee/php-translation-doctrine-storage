@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Translation\PlatformAdapter\Doctrine\Service;
 
 use Doctrine\Common\Persistence\ObjectRepository;
