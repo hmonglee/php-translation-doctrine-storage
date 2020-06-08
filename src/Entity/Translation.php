@@ -180,7 +180,7 @@ class Translation implements MessageInterface
      */
     public function getTranslation(): string
     {
-        return $this->translation;
+        return $this->translation ?? '';
     }
 
     /**
