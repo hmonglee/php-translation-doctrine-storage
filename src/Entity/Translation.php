@@ -44,7 +44,7 @@ class Translation implements MessageInterface
     protected $domain;
 
     /**
-     * @ORM\Column(type="string", length=5, nullable=false)
+     * @ORM\Column(type="string", length=30, nullable=false)
      *
      * @var string
      */
