@@ -83,7 +83,6 @@ class TranslationManager implements TranslationManagerInterface
             ->setStatus($message->getKey() === $message->getTranslation() ? Translation::STATUS_DRAFT : Translation::STATUS_PUBLISHED);
 
         $this->entityManager->persist($translation);
-        $this->entityManager->flush();
     }
 
     /**
@@ -100,7 +99,6 @@ class TranslationManager implements TranslationManagerInterface
         }
 
         $translation->setTranslation($message->getTranslation());
-        $this->entityManager->flush();
     }
 
     /**
@@ -134,6 +132,11 @@ class TranslationManager implements TranslationManagerInterface
             'domain' => $domain,
             'key' => $key,
         ]);
+    }
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
     }
 
     /**

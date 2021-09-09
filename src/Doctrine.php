@@ -94,6 +94,7 @@ class Doctrine implements Storage, TransferableStorage
                 $message = new Message($key, $domain, $locale, $translation);
                 $this->create($message);
             }
+            $this->manager->flush();
         }
     }
 }
